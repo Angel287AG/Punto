@@ -18,7 +18,7 @@ namespace Punto.Forms
             {
                 Conexion conexion = new Conexion();
 
-                using (MySqlConnection con = conexion.ObtenerConexion())
+                using (MySqlConnection con = conexion.GetConnection())
                 {
                     string sql = "SELECT * FROM productos";
 
@@ -48,7 +48,7 @@ namespace Punto.Forms
                 {
                     Conexion conexion = new Conexion();
 
-                    using (MySqlConnection con = conexion.ObtenerConexion())
+                    using (MySqlConnection con = conexion.GetConnection())
                     {
                         string sql = "DELETE FROM productos WHERE producto_id=@id";
 
@@ -93,7 +93,7 @@ namespace Punto.Forms
             {
                 Conexion conexion = new Conexion();
 
-                using (MySqlConnection con = conexion.ObtenerConexion())
+                using (MySqlConnection con = conexion.GetConnection())
                 {
                     string sql = @"UPDATE productos
                                    SET codigo=@codigo,
@@ -145,7 +145,7 @@ namespace Punto.Forms
             {
                 Conexion conexion = new Conexion();
 
-                using (MySqlConnection con = conexion.ObtenerConexion())
+                using (MySqlConnection con = conexion.GetConnection())
                 {
                     string sql = @"INSERT INTO productos
                                   (codigo,descripcion,precio,stock)
@@ -190,7 +190,7 @@ namespace Punto.Forms
 
         private void frmProductos_Load(object sender, EventArgs e)
         {
-
+            MostrarProductos();
 
         }
     }

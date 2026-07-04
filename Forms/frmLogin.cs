@@ -1,6 +1,5 @@
 using Punto.conexion;
 using System;
-using System.Security.Principal;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
@@ -16,14 +15,16 @@ namespace Punto.Forms
 
         private void btnLogin_Click(object sender, System.EventArgs e)
         {
-            frmPrincipal principal= new frmPrincipal();
-            this.Hide();
-            principal.Show();
 
-            if (txtUser.Text == "" || txtPassword.Text == "")
-            { 
-    
-                MessageBox.Show("Complete todos los campos");
+
+
+            if (txtUser.Text.Trim() == "" || txtPassword.Text.Trim() == "")
+            {
+                MessageBox.Show("Complete todos los campos.",
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
                 return;
             }
 
@@ -31,17 +32,20 @@ namespace Punto.Forms
             {
                 Conexion conexion = new Conexion();
 
-                using (MySqlConnection con = conexion.ObtenerConexion())
+                using (MySqlConnection con = conexion.GetConnection())
                 {
+                    if (con == null)
+                        return;
+
                     string sql = @"SELECT nombre_completo
-                           FROM usuarios
-                           WHERE username=@usuario
-                           AND password=@password";
+                       FROM usuarios
+                       WHERE username=@usuario
+                       AND password=@password";
 
                     MySqlCommand cmd = new MySqlCommand(sql, con);
 
-                    cmd.Parameters.AddWithValue("@usuario", txtUser.Text);
-                    cmd.Parameters.AddWithValue("@password", txtPassword.Text);
+                    cmd.Parameters.AddWithValue("@usuario", txtUser.Text.Trim());
+                    cmd.Parameters.AddWithValue("@password", txtPassword.Text.Trim());
 
                     MySqlDataReader lector = cmd.ExecuteReader();
 
@@ -57,13 +61,13 @@ namespace Punto.Forms
                     }
                     else
                     {
-                        MessageBox.Show("Usuario o contraseña incorrectos");
+                        MessageBox.Show("Usuario o contraseña incorrectos.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Error de conexión: " + ex.Message);
             }
 
         }

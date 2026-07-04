@@ -90,6 +90,7 @@ namespace Punto.Forms
             // 
             // frmLogin
             // 
+            this.BackColor = System.Drawing.Color.NavajoWhite;
             this.ClientSize = new System.Drawing.Size(350, 280);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

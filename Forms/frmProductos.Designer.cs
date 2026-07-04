@@ -265,6 +265,7 @@ namespace Punto.Forms
             // 
             // frmProductos
             // 
+            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(884, 540);
             this.Controls.Add(this.gbBusqueda);
             this.Controls.Add(this.dgvProductos);
