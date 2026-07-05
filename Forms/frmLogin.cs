@@ -37,6 +37,7 @@ namespace Punto.Forms
                     if (con == null)
                         return;
 
+
                     string sql = @"SELECT nombre_completo
                        FROM usuarios
                        WHERE username=@usuario

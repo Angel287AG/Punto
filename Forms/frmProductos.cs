@@ -20,7 +20,10 @@ namespace Punto.Forms
 
                 using (MySqlConnection con = conexion.GetConnection())
                 {
-                    string sql = "SELECT * FROM productos";
+                    if (con == null)
+                        return;
+
+                    string sql = "SELECT * FROM productos ORDER BY producto_id";
 
                     MySqlDataAdapter da = new MySqlDataAdapter(sql, con);
 
@@ -33,14 +36,23 @@ namespace Punto.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
             }
         }
 
         private void btnEliminar_Click(object sender, System.EventArgs e)
         {
+            if (lblId.Text == "0")
+            {
+                MessageBox.Show("Seleccione un producto.");
+                return;
+            }
+
             DialogResult r = MessageBox.Show(
-                "¿Eliminar producto?", "Confirmar",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+                "¿Eliminar producto?",
+                "Confirmar",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
 
             if (r == DialogResult.Yes)
             {
@@ -50,30 +62,39 @@ namespace Punto.Forms
 
                     using (MySqlConnection con = conexion.GetConnection())
                     {
+                        if (con == null)
+                            return;
+
                         string sql = "DELETE FROM productos WHERE producto_id=@id";
 
                         MySqlCommand cmd = new MySqlCommand(sql, con);
 
-                        cmd.Parameters.AddWithValue("@id", txtCodigo.Text);
+                        cmd.Parameters.AddWithValue("@id", lblId.Text);
 
                         cmd.ExecuteNonQuery();
 
-                        MessageBox.Show("Producto eliminado");
+                        MessageBox.Show("Producto eliminado.");
 
                         MostrarProductos();
-                  
+                        Limpiar();
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show("Error: " + ex.Message);
                 }
             }
-
         }
 
         private void btnEditar_Click(object sender, System.EventArgs e)
+
         {
+            if (lblId.Text == "0")
+            {
+                MessageBox.Show("Seleccione un producto.");
+                return;
+            }
+
             decimal precio;
             int stock;
 
@@ -95,37 +116,49 @@ namespace Punto.Forms
 
                 using (MySqlConnection con = conexion.GetConnection())
                 {
+                    if (con == null)
+                        return;
+
                     string sql = @"UPDATE productos
-                                   SET codigo=@codigo,
-                                       descripcion=@descripcion,
-                                       precio=@precio,
-                                       stock=@stock
-                                   WHERE producto_id=@id";
+                           SET codigo=@codigo,
+                               descripcion=@descripcion,
+                               precio=@precio,
+                               stock=@stock
+                           WHERE producto_id=@id";
 
                     MySqlCommand cmd = new MySqlCommand(sql, con);
 
-                    cmd.Parameters.AddWithValue("@codigo", txtCodigo.Text);
-                    cmd.Parameters.AddWithValue("@descripcion", txtNombre.Text);
+                    cmd.Parameters.AddWithValue("@codigo", txtCodigo.Text.Trim());
+                    cmd.Parameters.AddWithValue("@descripcion", txtNombre.Text.Trim());
                     cmd.Parameters.AddWithValue("@precio", precio);
                     cmd.Parameters.AddWithValue("@stock", stock);
-                    cmd.Parameters.AddWithValue("@id", txtCodigo.Text);
+                    cmd.Parameters.AddWithValue("@id", lblId.Text);
 
                     cmd.ExecuteNonQuery();
 
-                    MessageBox.Show("Producto actualizado");
+                    MessageBox.Show("Producto actualizado.");
 
                     MostrarProductos();
-      
+                    Limpiar();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
             }
         }
 
         private void btnNuevo_Click(object sender, System.EventArgs e)
         {
+            if (txtCodigo.Text.Trim() == "" ||
+       txtNombre.Text.Trim() == "" ||
+       txtPrecio.Text.Trim() == "" ||
+       txtStock.Text.Trim() == "")
+            {
+                MessageBox.Show("Complete todos los campos.");
+                return;
+            }
+
             decimal precio;
             int stock;
 
@@ -147,29 +180,32 @@ namespace Punto.Forms
 
                 using (MySqlConnection con = conexion.GetConnection())
                 {
+                    if (con == null)
+                        return;
+
                     string sql = @"INSERT INTO productos
-                                  (codigo,descripcion,precio,stock)
-                                  VALUES
-                                  (@codigo,@descripcion,@precio,@stock)";
+                           (codigo,descripcion,precio,stock)
+                           VALUES
+                           (@codigo,@descripcion,@precio,@stock)";
 
                     MySqlCommand cmd = new MySqlCommand(sql, con);
 
-                    cmd.Parameters.AddWithValue("@codigo", txtCodigo.Text);
-                    cmd.Parameters.AddWithValue("@descripcion", txtNombre.Text);
+                    cmd.Parameters.AddWithValue("@codigo", txtCodigo.Text.Trim());
+                    cmd.Parameters.AddWithValue("@descripcion", txtNombre.Text.Trim());
                     cmd.Parameters.AddWithValue("@precio", precio);
                     cmd.Parameters.AddWithValue("@stock", stock);
 
                     cmd.ExecuteNonQuery();
 
-                    MessageBox.Show("Producto guardado");
+                    MessageBox.Show("Producto guardado correctamente.");
 
                     MostrarProductos();
-         
+                    Limpiar();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
             }
         }
 
@@ -179,7 +215,7 @@ namespace Punto.Forms
             {
                 DataGridViewRow fila = dgvProductos.Rows[e.RowIndex];
 
-                txtCodigo.Text = fila.Cells["producto_id"].Value.ToString();
+                lblId.Text = fila.Cells["producto_id"].Value.ToString();
                 txtCodigo.Text = fila.Cells["codigo"].Value.ToString();
                 txtNombre.Text = fila.Cells["descripcion"].Value.ToString();
                 txtPrecio.Text = fila.Cells["precio"].Value.ToString();
@@ -191,6 +227,52 @@ namespace Punto.Forms
         private void frmProductos_Load(object sender, EventArgs e)
         {
             MostrarProductos();
+            Limpiar();
+
+        }
+        private void Limpiar()
+        {
+            lblId.Text = "0";
+            txtCodigo.Clear();
+            txtNombre.Clear();
+            txtPrecio.Clear();
+            txtStock.Clear();
+            txtCodigo.Focus();
+        }
+
+        private void txtBusqueda_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Conexion conexion = new Conexion();
+
+                using (MySqlConnection con = conexion.GetConnection())
+                {
+                    if (con == null)
+                        return;
+
+                    string sql = @"SELECT *FROM productos WHERE codigo LIKE @buscar OR descripcion LIKE @buscar";
+
+                    MySqlDataAdapter da = new MySqlDataAdapter(sql, con);
+
+                    da.SelectCommand.Parameters.AddWithValue("@buscar", "%" + txtBusqueda.Text.Trim() + "%");
+
+                    DataTable tabla = new DataTable();
+
+                    da.Fill(tabla);
+
+                    dgvProductos.DataSource = tabla;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+        }
+
+        private void cmbCategorias_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
         }
     }

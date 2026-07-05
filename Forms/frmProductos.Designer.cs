@@ -66,6 +66,7 @@ namespace Punto.Forms
             this.txtBusqueda.Name = "txtBusqueda";
             this.txtBusqueda.Size = new System.Drawing.Size(400, 22);
             this.txtBusqueda.TabIndex = 0;
+            this.txtBusqueda.TextChanged += new System.EventHandler(this.txtBusqueda_TextChanged);
             // 
             // dgvProductos
             // 
@@ -128,6 +129,7 @@ namespace Punto.Forms
             this.cmbCategorias.Name = "cmbCategorias";
             this.cmbCategorias.Size = new System.Drawing.Size(150, 24);
             this.cmbCategorias.TabIndex = 10;
+            this.cmbCategorias.SelectedIndexChanged += new System.EventHandler(this.cmbCategorias_SelectedIndexChanged);
             // 
             // btnNuevo
             // 
