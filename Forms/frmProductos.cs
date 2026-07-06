@@ -246,7 +246,7 @@ namespace Punto.Forms
             {
                 Conexion conexion = new Conexion();
 
-                using (MySqlConnection con = conexion.GetConnection())
+                using (MySqlConnection con =  conexion.GetConnection())
                 {
                     if (con == null)
                         return;
