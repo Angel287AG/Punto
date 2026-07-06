@@ -183,10 +183,7 @@ namespace Punto.Forms
                     if (con == null)
                         return;
 
-                    string sql = @"INSERT INTO productos
-                           (codigo,descripcion,precio,stock)
-                           VALUES
-                           (@codigo,@descripcion,@precio,@stock)";
+                    string sql = @"INSERT INTO productos (codigo,descripcion,precio,stock) VALUES (@codigo,@descripcion,@precio,@stock)";
 
                     MySqlCommand cmd = new MySqlCommand(sql, con);
 
@@ -246,7 +243,7 @@ namespace Punto.Forms
             {
                 Conexion conexion = new Conexion();
 
-                using (MySqlConnection con =  conexion.GetConnection())
+                using (MySqlConnection con = conexion.GetConnection())
                 {
                     if (con == null)
                         return;

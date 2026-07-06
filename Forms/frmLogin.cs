@@ -38,10 +38,7 @@ namespace Punto.Forms
                         return;
 
 
-                    string sql = @"SELECT nombre_completo
-                       FROM usuarios
-                       WHERE username=@usuario
-                       AND password=@password";
+                    string sql = @"SELECT nombre_completo FROM usuarios WHERE username=@usuario AND password=@password";
 
                     MySqlCommand cmd = new MySqlCommand(sql, con);
 
